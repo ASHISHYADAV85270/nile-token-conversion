@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SCSS Variable Replacer with Comparison</title>
+    <title>Nile Token Conversions</title>
     <style>
       :root {
         --primary-color: #4caf50;
@@ -92,9 +92,15 @@
       }
 
       #copy-btn {
+        align-self: center;
         background-color: lightskyblue;
         color: black;
         width: 30%;
+      }
+      .important-message {
+        color: #ff6347;
+        text-align: center;
+        margin-top: 20px;
       }
 
       @media (max-width: 600px) {
@@ -119,7 +125,7 @@
   </head>
   <body>
     <div class="container">
-      <h1>SCSS Variable Replacer with Comparison</h1>
+      <h1>SCSS Variable Replacer with Nile Tokens</h1>
 
       <label for="scss-input">Paste your SCSS file content:</label>
       <div class="textarea-container">
@@ -138,6 +144,10 @@
       </div>
 
       <button onclick="processSCSS()">Convert SCSS</button>
+
+      <p class="important-message">
+        Please verify after changing. Use at your own risk! 🙂 🙂 🙂 🙂 🙂 🙂
+      </p>
 
       <button id="copy-btn" onclick="copySCSS()">Copy Converted SCSS</button>
     </div>
