@@ -84,6 +84,12 @@
         background-color: var(--primary-hover-color);
       }
 
+      #copy-btn{
+        background-color: lightskyblue;
+        color: black;
+        width: 30%;
+      }
+
       @media (max-width: 600px) {
         .container {
           padding: 10px;
@@ -115,6 +121,7 @@
         placeholder="Converted SCSS will appear here..."
         readonly
       ></textarea>
+      <button id="copy-btn" onclick="copySCSS()">Copy Converted SCSS</button>
     </div>
 
     <script>
@@ -215,6 +222,20 @@
           "--nile-font-family-sans-serif",
         "colfax-medium": "--nile-font-family-medium",
       };
+
+      function copySCSS() {
+        const scssOutput = document.getElementById("scss-output").value;
+
+        // Use the clipboard API to copy the content
+        navigator.clipboard
+          .writeText(scssOutput)
+          .then(() => {
+            alert("Converted SCSS copied to clipboard!");
+          })
+          .catch((err) => {
+            console.error("Failed to copy text: ", err);
+          });
+      }
 
       const convertValues = (cssContent) => {
         // Regular expressions to match specific properties
