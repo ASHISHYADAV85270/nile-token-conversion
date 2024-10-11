@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SCSS Variable Replacer</title>
+    <title>SCSS Variable Replacer with Comparison</title>
     <style>
       :root {
         --primary-color: #4caf50;
@@ -37,6 +37,7 @@
 
       .container {
         width: 100%;
+        max-width: 1600px;
         background-color: var(--textarea-bg-color);
         padding: var(--padding-base);
         border-radius: var(--border-radius);
@@ -57,9 +58,15 @@
         margin-bottom: 8px;
       }
 
+      .textarea-container {
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+      }
+
       textarea {
-        width: 1400px;
-        height: 200px;
+        width: 100%;
+        height: 300px;
         padding: 10px;
         font-family: "Courier New", monospace;
         font-size: 1rem;
@@ -84,7 +91,7 @@
         background-color: var(--primary-hover-color);
       }
 
-      #copy-btn{
+      #copy-btn {
         background-color: lightskyblue;
         color: black;
         width: 30%;
@@ -96,31 +103,42 @@
         }
 
         textarea {
-          height: 150px;
+          height: 200px;
         }
 
         button {
           font-size: 0.9rem;
           padding: 10px 20px;
         }
+
+        .textarea-container {
+          flex-direction: column;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1>SCSS Variable Replacer</h1>
+      <h1>SCSS Variable Replacer with Comparison</h1>
 
       <label for="scss-input">Paste your SCSS file content:</label>
-      <textarea id="scss-input" placeholder="Paste SCSS here..."></textarea>
+      <div class="textarea-container">
+        <!-- Original SCSS Input -->
+        <textarea
+          id="scss-input"
+          placeholder="Paste original SCSS here..."
+        ></textarea>
+
+        <!-- Converted SCSS Output -->
+        <textarea
+          id="scss-output"
+          placeholder="Converted SCSS will appear here..."
+          readonly
+        ></textarea>
+      </div>
 
       <button onclick="processSCSS()">Convert SCSS</button>
 
-      <label for="scss-output">Converted SCSS file with Nile Tokens:</label>
-      <textarea
-        id="scss-output"
-        placeholder="Converted SCSS will appear here..."
-        readonly
-      ></textarea>
       <button id="copy-btn" onclick="copySCSS()">Copy Converted SCSS</button>
     </div>
 
@@ -315,6 +333,7 @@
 
         return lines.join("\n"); // Return the modified content
       };
+
       function processSCSS() {
         // Get the input SCSS content
         const scssInput = document.getElementById("scss-input").value;
