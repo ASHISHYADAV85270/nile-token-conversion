@@ -37,7 +37,6 @@
 
       .container {
         width: 100%;
-        max-width: 800px;
         background-color: var(--textarea-bg-color);
         padding: var(--padding-base);
         border-radius: var(--border-radius);
@@ -59,7 +58,7 @@
       }
 
       textarea {
-        width: 100%;
+        width: 1400px;
         height: 200px;
         padding: 10px;
         font-family: "Courier New", monospace;
@@ -241,7 +240,7 @@
             Object.keys(radiusMap).forEach((value) => {
               const variable = radiusMap[value];
               line = line.replace(
-                new RegExp(`${value}`, "g"),
+                new RegExp(`\\b${value}\\b`, "g"),
                 `var(${variable})`
               );
             });
@@ -250,7 +249,7 @@
             Object.keys(fontSizeMap).forEach((value) => {
               const variable = fontSizeMap[value];
               line = line.replace(
-                new RegExp(`${value}`, "g"),
+                new RegExp(`\\b${value}\\b`, "g"),
                 `var(${variable})`
               );
             });
@@ -259,7 +258,7 @@
             Object.keys(fontFamilyMap).forEach((value) => {
               const variable = fontFamilyMap[value];
               line = line.replace(
-                new RegExp(`'${value}'`, "g"),
+                new RegExp(`\\b${value}\\b`, "g"),
                 `var(${variable})`
               );
             });
@@ -268,7 +267,7 @@
             Object.keys(lineHeightMap).forEach((value) => {
               const variable = lineHeightMap[value];
               line = line.replace(
-                new RegExp(`${value}`, "g"),
+                new RegExp(`\\b${value}\\b`, "g"),
                 `var(${variable})`
               );
             });
@@ -281,17 +280,16 @@
               );
             });
           } else if (transitionRegex.test(line)) {
-            // Apply the transition map replacements
             Object.keys(transitionMap).forEach((value) => {
               const variable = transitionMap[value];
               line = line.replace(
-                new RegExp(`${value}`, "g"),
+                new RegExp(`\\b${value}\\b`, "g"),
                 `var(${variable})`
               );
             });
           }
 
-          return line; // Return the updated line
+          return line;
         });
 
         return lines.join("\n"); // Return the modified content
