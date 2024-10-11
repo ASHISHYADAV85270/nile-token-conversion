@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SCSS Variable Replacer</title>
+    <style>
+      :root {
+        --primary-color: #4caf50;
+        --primary-hover-color: #45a049;
+        --font-family-base: "Arial", sans-serif;
+        --text-color: #333;
+        --bg-color: #f9f9f9;
+        --textarea-bg-color: #fff;
+        --border-color: #ddd;
+        --padding-base: 20px;
+        --border-radius: 8px;
+        --box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font-family-base);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        padding: var(--padding-base);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 800px;
+        background-color: var(--textarea-bg-color);
+        padding: var(--padding-base);
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        display: flex;
+        flex-direction: column;
+        gap: var(--padding-base);
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+      }
+
+      label {
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+
+      textarea {
+        width: 100%;
+        height: 200px;
+        padding: 10px;
+        font-family: "Courier New", monospace;
+        font-size: 1rem;
+        background-color: var(--textarea-bg-color);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        resize: vertical;
+      }
+
+      button {
+        padding: 12px 25px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: var(--primary-hover-color);
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 10px;
+        }
+
+        textarea {
+          height: 150px;
+        }
+
+        button {
+          font-size: 0.9rem;
+          padding: 10px 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>SCSS Variable Replacer</h1>
+
+      <label for="scss-input">Paste your SCSS file content:</label>
+      <textarea id="scss-input" placeholder="Paste SCSS here..."></textarea>
+
+      <button onclick="processSCSS()">Convert SCSS</button>
+
+      <label for="scss-output">Converted SCSS file with Nile Tokens:</label>
+      <textarea
+        id="scss-output"
+        placeholder="Converted SCSS will appear here..."
+        readonly
+      ></textarea>
+    </div>
+
+    <script>
+      const transitionMap = {
+        "50ms": "--nile-transition-duration-shorter",
+        "100ms": "--nile-transition-duration-short",
+        "250ms": "--nile-transition-duration-default",
+        "500ms": "--nile-transition-duration-long",
+        "1000ms": "--nile-transition-duration-longer",
+      };
+
+      const spacingMap = {
+        "2px": "--nile-spacing-spacing-xxs",
+        "4px": "--nile-spacing-spacing-xs",
+        "6px": "--nile-spacing-spacing-sm",
+        "8px": "--nile-spacing-spacing-md",
+        "12px": "--nile-spacing-spacing-lg",
+        "16px": "--nile-spacing-spacing-xl",
+        "20px": "--nile-spacing-spacing-2xl",
+        "24px": "--nile-spacing-spacing-3xl",
+        "32px": "--nile-spacing-spacing-4xl",
+        "40px": "--nile-spacing-spacing-5xl",
+        "48px": "--nile-spacing-spacing-6xl",
+        "64px": "--nile-spacing-spacing-7xl",
+        "80px": "--nile-spacing-spacing-8xl",
+        "96px": "--nile-spacing-spacing-9xl",
+        "128px": "--nile-spacing-spacing-10xl",
+        "160px": "--nile-spacing-spacing-11xl",
+      };
+
+      const widthMap = {
+        "320px": "--nile-width-width-xxs",
+        "384px": "--nile-width-width-xs",
+        "480px": "--nile-width-width-sm",
+        "560px": "--nile-width-width-md",
+        "640px": "--nile-width-width-lg",
+        "768px": "--nile-width-width-xl",
+        "1024px": "--nile-width-width-2xl",
+        "1280px": "--nile-width-width-3xl",
+        "1440px": "--nile-width-width-4xl",
+        "1600px": "--nile-width-width-5xl",
+        "1920px": "--nile-width-width-6xl",
+      };
+
+      const radiusMap = {
+        "0px": "--nile-radius-radius-none",
+        "2px": "--nile-radius-radius-xxs",
+        "4px": "--nile-radius-radius-xs",
+        "6px": "--nile-radius-radius-lg",
+        "8px": "--nile-radius-radius-xl",
+        "10px": "--nile-radius-radius-2xl",
+        "12px": "--nile-radius-radius-3xl",
+        "16px": "--nile-radius-radius-4xl",
+        "9999px": "--nile-radius-radius-full",
+      };
+
+      const colorMap = {
+        "#FFFFFF": "--nile-colors-white-base",
+        "rgba(255, 255, 255, 0.5)": "--nile-colors-white-a50",
+        "rgba(255, 255, 255, 0.2)": "--nile-colors-white-a20",
+        "#A4121C": "--nile-colors-red-700",
+        "#E5434D": "--nile-colors-red-500",
+        "#F3A5AA": "--nile-colors-red-400",
+        "#FEF6F7": "--nile-colors-red-100",
+        "#002F53": "--nile-colors-primary-900",
+        "#005291": "--nile-colors-primary-700",
+        "#005EA6": "--nile-colors-primary-600",
+        "#80AED3": "--nile-colors-primary-500",
+        "rgba(0, 94, 166, 0.25)": "--nile-colors-primary-400",
+        "rgba(0, 94, 166, 0.1)": "--nile-colors-primary-100",
+      };
+
+      const fontSizeMap = {
+        "10.24px": "--nile-type-scale-1",
+        "12px": "--nile-type-scale-2",
+        "14px": "--nile-type-scale-3",
+        "16px": "--nile-type-scale-4",
+        "18px": "--nile-type-scale-5",
+        "20px": "--nile-type-scale-6",
+        "31.25px": "--nile-type-scale-7",
+        "39.06px": "--nile-type-scale-8",
+        "48.83px": "--nile-type-scale-9",
+      };
+
+      const lineHeightMap = {
+        "1rem": "--nile-line-height-xsmall",
+        "1.25rem": "--nile-line-height-small",
+        "1.5rem": "--nile-line-height-medium",
+        "1.75rem": "--nile-line-height-large",
+        "2.25rem": "--nile-line-height-xlarge",
+      };
+
+      const fontFamilyMap = {
+        "colfax-medium, Times, Georgia, serif":
+          "--nile-font-family-serif-colfax-medium",
+        "colfax-regular, Times, Georgia, serif": "--nile-font-family-serif",
+        "colfax-regular, Helvetica, Helvetica Neue, Arial, Segoe UI, Roboto, Droid Sans, sans-serif":
+          "--nile-font-family-sans-serif",
+        "colfax-medium": "--nile-font-family-medium",
+      };
+
+      const convertValues = (cssContent) => {
+        // Regular expressions to match specific properties
+        const spacingRegex =
+          /padding|margin|width|height|top|bottom|left|right|gap|grid-gap/;
+        const radiusRegex = /border-radius|radius/;
+        const fontSizeRegex = /font-size/;
+        const fontFamilyRegex = /font-family/;
+
+        const lineHeightRegex = /line-height/;
+        const colorRegex = /color|background|border-color/;
+        const transitionRegex = /transition/;
+
+        // Process the CSS line by line
+        const lines = cssContent.split("\n").map((line) => {
+          if (spacingRegex.test(line)) {
+            // Apply the spacing map replacements to any spacing-related property
+            line = line.replace(/(\d+px)/g, (match) => {
+              return spacingMap[match] ? `var(${spacingMap[match]})` : match;
+            });
+          } else if (radiusRegex.test(line)) {
+            // Apply the radius map replacements
+            Object.keys(radiusMap).forEach((value) => {
+              const variable = radiusMap[value];
+              line = line.replace(
+                new RegExp(`${value}`, "g"),
+                `var(${variable})`
+              );
+            });
+          } else if (fontSizeRegex.test(line)) {
+            // Apply the font-size map replacements
+            Object.keys(fontSizeMap).forEach((value) => {
+              const variable = fontSizeMap[value];
+              line = line.replace(
+                new RegExp(`${value}`, "g"),
+                `var(${variable})`
+              );
+            });
+          } else if (fontFamilyRegex.test(line)) {
+            // Apply the font-size map replacements
+            Object.keys(fontFamilyMap).forEach((value) => {
+              const variable = fontFamilyMap[value];
+              line = line.replace(
+                new RegExp(`'${value}'`, "g"),
+                `var(${variable})`
+              );
+            });
+          } else if (lineHeightRegex.test(line)) {
+            // Apply the line-height map replacements
+            Object.keys(lineHeightMap).forEach((value) => {
+              const variable = lineHeightMap[value];
+              line = line.replace(
+                new RegExp(`${value}`, "g"),
+                `var(${variable})`
+              );
+            });
+          } else if (colorRegex.test(line)) {
+            Object.keys(colorMap).forEach((value) => {
+              const variable = colorMap[value];
+              line = line.replace(
+                new RegExp(`['"]?${value}['"]?`, "g"),
+                `var(${variable})`
+              );
+            });
+          } else if (transitionRegex.test(line)) {
+            // Apply the transition map replacements
+            Object.keys(transitionMap).forEach((value) => {
+              const variable = transitionMap[value];
+              line = line.replace(
+                new RegExp(`${value}`, "g"),
+                `var(${variable})`
+              );
+            });
+          }
+
+          return line; // Return the updated line
+        });
+
+        return lines.join("\n"); // Return the modified content
+      };
+      function processSCSS() {
+        // Get the input SCSS content
+        const scssInput = document.getElementById("scss-input").value;
+
+        // Process the SCSS content with the convertValues function
+        const convertedSCSS = convertValues(scssInput);
+
+        // Display the converted SCSS in the output text area
+        document.getElementById("scss-output").value = convertedSCSS;
+      }
+    </script>
+  </body>
+</html>
